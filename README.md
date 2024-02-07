@@ -24,6 +24,7 @@ git clone https://github.com/CU-NESS/lochness.git
 ```
 Then install the LOCHNESS package via:
 ```
+cd lochness
 python setup.py develop
 ```
 Note that it is necessary to have the appropriate SPICE kernels installed 
