@@ -27,8 +27,17 @@ Then install the LOCHNESS package via:
 cd lochness
 python setup.py develop
 ```
-Note that it is necessary to have the appropriate SPICE kernels installed 
-(see the spicepy documentation above). However, for users in a hurry,
+Note that it is necessary to have the appropriate SPICE kernels downloaded 
+(see the spicepy documentation above), including:
+```
+naif0012.tls,
+de440.bsp,
+pck00011.tpc,
+moon_080317.tf,
+moon_assoc_pa.tf,
+moon_pa_de421_1900-2050.bpc.
+```
+However, for users in a hurry,
 we have uploaded the most relevant ones for the LOCHNESS calculations
 in the directory:
 ```
