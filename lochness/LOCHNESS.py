@@ -15,7 +15,7 @@ import numpy as np
 import healpy as hp
 import spiceypy as spice
 from datetime import datetime
-from ..map_utilities import spherical_rotator,\
+from lochness.map_utilities import spherical_rotator,\
 	rotator_for_spinning
 
 MOON_RAD = 1736.0     # km (polar radius)  # avg rad 1737.4 km
@@ -163,18 +163,30 @@ class LOCHNESS(object):
 			earth_alt_azi_all_times.append([earth_alt,earth_azi])
 			
 			if self.galaxy_map is not None:
-				lunar_frame_galaxy_map = self.getBeamFrameGalaxyMap(self.galaxy_map, \
-					lunar_north_pole_lon, lunar_north_pole_lat,\
-					landing_site_zenith_lon, landing_site_zenith_lat)
+				ndims = self.galaxy_map.ndim
+				if ndims == 1:
+					lunar_frame_galaxy_map = self.getBeamFrameGalaxyMap(self.galaxy_map, \
+						lunar_north_pole_lon, lunar_north_pole_lat,\
+						landing_site_zenith_lon, landing_site_zenith_lat)
 					
-				galaxy_map_all_times.append(lunar_frame_galaxy_map)
-				
-			if self.run_test_galaxy_map:
-				lunar_frame_galaxy_map_from_vec = self.getBeamFrameGalaxyMapFromNEZVectors(self.galaxy_map, \
-				landing_site_zenith_lon, landing_site_zenith_lat, \
-				north_vec_galLon, north_vec_galLat)
-				
-				test_galaxy_maps_from_zenith_vectors_list.append(lunar_frame_galaxy_map_from_vec)
+					galaxy_map_all_times.append(lunar_frame_galaxy_map)
+				else:
+					nmaps = self.galaxy_map.shape[0]
+					galaxy_by_map = []
+					for imap in range(nmaps):
+						lunar_frame_galaxy_map = self.getBeamFrameGalaxyMap(self.galaxy_map[imap], \
+							lunar_north_pole_lon, lunar_north_pole_lat,\
+							landing_site_zenith_lon, landing_site_zenith_lat)
+						galaxy_by_map.append(lunar_frame_galaxy_map)
+						
+					galaxy_map_all_times.append(galaxy_by_map)
+				if self.run_test_galaxy_map:
+					lunar_frame_galaxy_map_from_vec = \
+					self.getBeamFrameGalaxyMapFromNEZVectors(self.galaxy_map, \
+					landing_site_zenith_lon, landing_site_zenith_lat, \
+					north_vec_galLon, north_vec_galLat)
+					
+					test_galaxy_maps_from_zenith_vectors_list.append(lunar_frame_galaxy_map_from_vec)
 				
 		self.all_ephemTime = np.array(ephemTime_list)
 		self.zenith_galactic_coordinates = np.array(zenith_gal_coordinates_all_times)
